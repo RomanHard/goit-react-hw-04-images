@@ -7,7 +7,6 @@ import Modal from './modal/Modal';
 import { fetchImages } from './api/Api';
 
 
-
 function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [images, setImages] = useState(null);
