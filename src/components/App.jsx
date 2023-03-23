@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import Searchbar from './searchbar/Searchbar';
 import ImageGallery from './imageGallery/ImageGallery';
 import Button from './button/Button';
@@ -6,95 +6,72 @@ import Spinner from './loader/Loader';
 import Modal from './modal/Modal';
 import { fetchImages } from './api/Api';
 
-class App extends Component {
-  state = {
-    searchQuery: '',
-    images: null,
-    currentPage: 1,
-    isLoadMoreButtonVisible: false,
-    isLoading: false,
-    totalHits: null,
-    largeImageURL: null,
-  };
 
 
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.searchQuery !== this.state.searchQuery ||
-      prevState.currentPage !== this.state.currentPage
-    ) {
-      this.fetchImages(this.state.currentPage, this.state.searchQuery);
-    }
-  }
+function App() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [images, setImages] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalHits, setTotalHits] = useState(null);
+  const [largeImageURL, setLargeImageURL] = useState(null);
 
-  fetchImages = async page => {
-    const { searchQuery } = this.state;
-    this.setState({ isLoading: true });
-
-    try {
-      const { images, totalHits, isLoadMoreButtonVisible } = await fetchImages(
-        searchQuery,
-        page
-      );
-
-      this.setState({
-        images: [...this.state.images, ...images],
-        totalHits,
-        isLoadMoreButtonVisible,
+  useEffect(() => {
+    if (searchQuery !== '') {
+      fetchImages(currentPage, searchQuery).then(({ images, totalHits }) => {
+        setImages(images);
+        setTotalHits(totalHits);
+        setIsLoadMoreButtonVisible(true);
       });
-    } catch (error) {
-      console.error('Error fetching images: ', error);
-    } finally {
-      this.setState({ isLoading: false });
     }
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (currentPage > 1) {
+      fetchImages(currentPage, searchQuery).then(({ images }) => {
+        setImages(prevImages => [...prevImages, ...images]);
+      });
+    }
+  }, [currentPage]);
+
+  const handleSubmit = query => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+    setIsLoadMoreButtonVisible(false);
+    setIsLoading(false);
+    setTotalHits(null);
   };
 
-  handleSubmit = query => {
-    this.setState({
-      searchQuery: query,
-      images: [],
-      currentPage: 1,
-      isLoadMoreButtonVisible: false,
-      isLoading: false,
-      totalHits: null,
-    });
+  const handleLoadMoreClick = () => {
+    setCurrentPage(prevPage => prevPage + 1);
   };
 
-  handleLoadMoreClick = async () => {
-    const { currentPage } = this.state;
-    this.setState({ currentPage: currentPage + 1 });
+  const handleOpenModal = largeImageURL => {
+    setLargeImageURL(largeImageURL);
   };
 
-  handleOpenModal = largeImageURL => {
-    this.setState({ largeImageURL });
+  const handlCloseModal = () => {
+    setLargeImageURL(null);
   };
 
-  handlCloseModal = () => {
-    this.setState({ largeImageURL: null });
-  };
-
-  render() {
-    const { images, isLoadMoreButtonVisible, isLoading } = this.state;
-
-    return (
-      <div className="App">
-        <Searchbar onSubmit={this.handleSubmit} />
-        {images !== null && (
-          <ImageGallery images={images} onClick={this.handleOpenModal} />
-        )}
-        {isLoading && <Spinner />}
-        {isLoadMoreButtonVisible && (
-          <Button onClick={this.handleLoadMoreClick} disabled={isLoading} />
-        )}
-        {this.state.largeImageURL && (
-          <Modal
-            largeImageURL={this.state.largeImageURL}
-            closeModal={this.handlCloseModal}
-          />
-        )}
-      </div>
-    );
-  }
+  return (
+    <div className="App">
+      <Searchbar onSubmit={handleSubmit} />
+      {images !== null && (
+        <ImageGallery images={images} onClick={handleOpenModal} />
+      )}
+      {isLoading && <Spinner />}
+      {isLoadMoreButtonVisible && (
+        <Button onClick={handleLoadMoreClick} disabled={isLoading} />
+      )}
+      {largeImageURL && (
+        <Modal largeImageURL={largeImageURL} closeModal={handlCloseModal} />
+      )}
+    </div>
+  );
 }
 
+
 export default App;
+
