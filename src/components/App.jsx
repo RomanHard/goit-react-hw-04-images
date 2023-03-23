@@ -24,7 +24,7 @@ function App() {
         setIsLoadMoreButtonVisible(true);
       });
     }
-  }, [searchQuery]);
+  }, [searchQuery, currentPage, totalHits]);
 
   useEffect(() => {
     if (currentPage > 1) {
@@ -32,7 +32,7 @@ function App() {
         setImages(prevImages => [...prevImages, ...images]);
       });
     }
-  }, [currentPage]);
+  }, [currentPage, searchQuery, totalHits]);
 
   const handleSubmit = query => {
     setSearchQuery(query);
@@ -70,7 +70,6 @@ function App() {
     </div>
   );
 }
-
 
 export default App;
 
