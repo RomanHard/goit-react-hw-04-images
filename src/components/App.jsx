@@ -17,6 +17,7 @@ class App extends Component {
     largeImageURL: null,
   };
 
+
   componentDidUpdate(prevProps, prevState) {
     if (
       prevState.searchQuery !== this.state.searchQuery ||
