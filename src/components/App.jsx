@@ -18,15 +18,21 @@ function App() {
   useEffect(() => {
     if (searchQuery !== '') {
       setIsLoading(true);
-      setImages([]);
       fetchImages(searchQuery, currentPage).then(({ images, totalHits, isLoadMoreButtonVisible }) => {
-        setImages(prevImages => [...prevImages, ...images]);
+        setImages(prevImages => {
+          if (currentPage === 1) {
+            return [...images];
+          } else {
+            return [...prevImages, ...images];
+          }
+        });
         setTotalHits(totalHits);
         setIsLoadMoreButtonVisible(isLoadMoreButtonVisible);
         setIsLoading(false);
       });
     }
   }, [searchQuery, currentPage, totalHits]);
+  
 
   const handleSubmit = query => {
     setSearchQuery(query);
