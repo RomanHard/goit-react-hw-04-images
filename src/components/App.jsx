@@ -6,7 +6,6 @@ import Spinner from './loader/Loader';
 import Modal from './modal/Modal';
 import { fetchImages } from './api/Api';
 
-
 function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [images, setImages] = useState(null);
@@ -26,13 +25,14 @@ function App() {
     }
   }, [searchQuery, currentPage, totalHits]);
 
+
   useEffect(() => {
     if (currentPage > 1) {
       fetchImages(currentPage, searchQuery).then(({ images }) => {
         setImages(prevImages => [...prevImages, ...images]);
       });
     }
-  }, [currentPage, searchQuery, totalHits]);
+  }, [currentPage, searchQuery]);
 
   const handleSubmit = query => {
     setSearchQuery(query);
@@ -70,6 +70,7 @@ function App() {
     </div>
   );
 }
+
 
 export default App;
 

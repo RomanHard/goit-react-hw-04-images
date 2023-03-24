@@ -41,7 +41,6 @@ const useImages = (searchQuery) => {
   const [isLoading, setIsLoading] = useState(false);
   const [totalHits, setTotalHits] = useState(null);
 
-  console.log(searchQuery);
 
   useEffect(() => {
     if (searchQuery !== '') {
