@@ -27,7 +27,7 @@ function App() {
   useEffect(() => {
     if (currentPage > 1) {
       fetchImages(searchQuery, currentPage).then(({ images }) => {
-        setImages(prevImages => [...prevImages, ...images]);
+        setImages(prevImages => [...images, ...prevImages]);
       });
     }
   }, [searchQuery, currentPage]);
