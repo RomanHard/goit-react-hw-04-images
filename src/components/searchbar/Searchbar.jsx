@@ -13,6 +13,7 @@ function Searchbar({ onSubmit }) {
     setInputValue(event.target.value);
   };
 
+
   return (
     <header className="searchbar">
       <form className="form" onSubmit={handleSubmit}>
