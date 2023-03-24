@@ -5,7 +5,6 @@ import Button from './button/Button';
 import Spinner from './loader/Loader';
 import Modal from './modal/Modal';
 import { fetchImages } from './api/Api';
-
 function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [images, setImages] = useState(null);
@@ -17,22 +16,21 @@ function App() {
 
   useEffect(() => {
     if (searchQuery !== '') {
-      fetchImages(currentPage, searchQuery).then(({ images, totalHits }) => {
+      fetchImages(searchQuery, currentPage).then(({ images, totalHits, isLoadMoreButtonVisible }) => {
         setImages(images);
         setTotalHits(totalHits);
-        setIsLoadMoreButtonVisible(true);
+        setIsLoadMoreButtonVisible(isLoadMoreButtonVisible);
       });
     }
   }, [searchQuery, currentPage, totalHits]);
 
-
   useEffect(() => {
     if (currentPage > 1) {
-      fetchImages(currentPage, searchQuery).then(({ images }) => {
+      fetchImages(searchQuery, currentPage).then(({ images }) => {
         setImages(prevImages => [...prevImages, ...images]);
       });
     }
-  }, [currentPage, searchQuery]);
+  }, [searchQuery, currentPage]);
 
   const handleSubmit = query => {
     setSearchQuery(query);
@@ -50,7 +48,7 @@ function App() {
     setLargeImageURL(largeImageURL);
   };
 
-  const handlCloseModal = () => {
+  const handleCloseModal = () => {
     setLargeImageURL(null);
   };
 
@@ -65,12 +63,11 @@ function App() {
         <Button onClick={handleLoadMoreClick} disabled={isLoading} />
       )}
       {largeImageURL && (
-        <Modal largeImageURL={largeImageURL} closeModal={handlCloseModal} />
+        <Modal largeImageURL={largeImageURL} closeModal={handleCloseModal} />
       )}
     </div>
   );
 }
-
 
 export default App;
 
