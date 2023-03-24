@@ -18,6 +18,7 @@ function App() {
   useEffect(() => {
     if (searchQuery !== '') {
       setIsLoading(true);
+      setImages([]);
       fetchImages(searchQuery, currentPage).then(({ images, totalHits, isLoadMoreButtonVisible }) => {
         setImages(prevImages => [...prevImages, ...images]);
         setTotalHits(totalHits);
@@ -33,14 +34,12 @@ function App() {
     setIsLoadMoreButtonVisible(false);
     setIsLoading(false);
     setTotalHits(null);
-    setImages([])
+    setImages([]);
   };
 
   const handleLoadMoreClick = () => {
     setCurrentPage(prevPage => prevPage + 1);
-
   };
-  
 
   const handleOpenModal = largeImageURL => {
     setLargeImageURL(largeImageURL);
