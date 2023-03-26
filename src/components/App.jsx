@@ -19,13 +19,7 @@ function App() {
     if (searchQuery !== '') {
       setIsLoading(true);
       fetchImages(searchQuery, currentPage).then(({ images, totalHits, isLoadMoreButtonVisible }) => {
-        setImages(prevImages => {
-          if (currentPage === 1) {
-            return [...images];
-          } else {
-            return [...prevImages, ...images];
-          }
-        });
+        setImages(prevImages => [...prevImages, ...images]);
         setTotalHits(totalHits);
         setIsLoadMoreButtonVisible(isLoadMoreButtonVisible);
         setIsLoading(false);
