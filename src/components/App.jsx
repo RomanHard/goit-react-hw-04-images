@@ -12,7 +12,6 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [totalHits, setTotalHits] = useState(null);
   const [largeImageURL, setLargeImageURL] = useState(null);
 
   useEffect(() => {
@@ -20,20 +19,17 @@ function App() {
       setIsLoading(true);
       fetchImages(searchQuery, currentPage).then(({ images, totalHits, isLoadMoreButtonVisible }) => {
         setImages(prevImages => [...prevImages, ...images]);
-        setTotalHits(totalHits);
         setIsLoadMoreButtonVisible(isLoadMoreButtonVisible);
         setIsLoading(false);
       });
     }
-  }, [searchQuery, currentPage, totalHits]);
-  
+  }, [searchQuery, currentPage]);
 
   const handleSubmit = query => {
     setSearchQuery(query);
     setCurrentPage(1);
     setIsLoadMoreButtonVisible(false);
     setIsLoading(false);
-    setTotalHits(null);
     setImages([]);
   };
 
